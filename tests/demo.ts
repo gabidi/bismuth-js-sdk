@@ -79,10 +79,10 @@ describe("Bismuth SDK test : ",()=>{
         expect(result).to.haveOwnProperty('txid');
         return result;
 
-    })
+    }).timeout(5000)
   
    it("Can Get an list of addreses balances",async()=>{
-        let addressList = ['731337bb0f76463d578626a48367dfea4c6efcfa317604814f875d10','340c195f768be515488a6efedb958e135150b2ef3e53573a7017ac7d'];
+        let addressList = ['d2f59465568c120a9203f9bd6ba2169b21478f4e7cb713f61eaa1ea0','340c195f768be515488a6efedb958e135150b2ef3e53573a7017ac7d'];
         let result = await sdk.getAddressListBalance([ addressList, 0, true]);
         expect(result).to.be.an('Object');
         expect(result).to.have.all.keys(...addressList)
@@ -102,5 +102,6 @@ describe("Bismuth SDK test : ",()=>{
 
         return result;
 
-    })
+    }).timeout(5000);
+
 })
