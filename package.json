@@ -1,6 +1,6 @@
 {
   "name": "bismuthapi",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Javascript client for bismuth api",
   "dependencies": {
     "@types/node": "^10.12.0",
