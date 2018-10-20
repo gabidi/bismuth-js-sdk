@@ -1,12 +1,17 @@
 import { expect } from "chai";
-import { BismuthNative } from "../BismuthNative";
 import { BismuthSdk } from "../BismuthSdk";
-import { BismuthWSSdk } from "../BismuthWSSdk";
-import WebSocket = require("ws");
+import * as net from "net";
+import { BismuthNative, BismuthNativeConstructorParam } from "../BismuthNative";
 const cfg = {
-  server: "127.0.0.1",
-  port: 5658,
-  verbose: false
+  verbose: false,
+  socket: new Promise((resolve, reject) => {
+    let socket = net.createConnection(
+      { host: "127.0.0.1", port: 5658, writable: true, readable: true },
+      () => {
+        return resolve(socket);
+      }
+    );
+  })
 };
 
 let bis: BismuthNative;
@@ -104,51 +109,5 @@ describe("Bismuth SDK test : ", () => {
     expect(address).to.have.length(56);
 
     return result;
-  }).timeout(5000);
-});
-
-let wsSdk: BismuthWSSdk;
-
-describe("Bismuth WS SDK test", () => {
-  before(() => {
-    wsSdk = new BismuthWSSdk({
-      verbose: true,
-      socket: new Promise((res, rej) => {
-        const socket = new WebSocket("http://127.0.0.1:8155/web-socket/");
-        socket.on("open", () => {
-          console.log("WSocket is ready!");
-          res(socket);
-        });
-        socket.on("error", err => rej(err));
-      })
-    });
-  });
-
-  it("Can Get node status using a websocket connection", async () => {
-    let result = await (await wsSdk).getStatus();
-    expect(result).to.be.haveOwnProperty("blocks");
-    return result;
-  }).timeout(10000);
-  it("Can Get a block's  details", async () => {
-    let result = await (await wsSdk).getBlock([558742]);
-    expect(result).to.be.an("Array");
-    result.forEach(result => expect(result).to.have.length(12));
-    return result;
-  });
-  it("Can Get an list of addreses balances", async () => {
-    let addressList = [
-      "d2f59465568c120a9203f9bd6ba2169b21478f4e7cb713f61eaa1ea0",
-      "340c195f768be515488a6efedb958e135150b2ef3e53573a7017ac7d"
-    ];
-    let result = await (await wsSdk).getAddressListBalance([
-      addressList,
-      0,
-      true
-    ]);
-    expect(result).to.be.an("Object");
-    expect(result).to.have.all.keys(...addressList);
-    return result;
-
-    // this is slow
   }).timeout(5000);
 });

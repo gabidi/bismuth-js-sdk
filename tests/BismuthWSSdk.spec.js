@@ -20,7 +20,7 @@ let wsSdk;
 describe("Bismuth WS SDK test", () => {
     before(() => {
         wsSdk = new BismuthWSSdk_1.BismuthWSSdk({
-            verbose: true,
+            verbose: false,
             socket: new Promise((res, rej) => {
                 const socket = new WebSocket("http://127.0.0.1:8155/web-socket/");
                 socket.on("open", () => {

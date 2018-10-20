@@ -7,16 +7,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const chai_1 = require("chai");
-const BismuthNative_1 = require("../BismuthNative");
 const BismuthSdk_1 = require("../BismuthSdk");
-const BismuthWSSdk_1 = require("../BismuthWSSdk");
-const WebSocket = require("ws");
+const net = __importStar(require("net"));
+const BismuthNative_1 = require("../BismuthNative");
 const cfg = {
-    server: "127.0.0.1",
-    port: 5658,
-    verbose: false
+    verbose: false,
+    socket: new Promise((resolve, reject) => {
+        let socket = net.createConnection({ host: "127.0.0.1", port: 5658, writable: true, readable: true }, () => {
+            return resolve(socket);
+        });
+    })
 };
 let bis;
 describe("BismuthNative Class Test", () => {
@@ -96,47 +105,5 @@ describe("Bismuth SDK test : ", () => {
         chai_1.expect(publicKey).to.include("PUBLIC");
         chai_1.expect(address).to.have.length(56);
         return result;
-    })).timeout(5000);
-});
-let wsSdk;
-describe("Bismuth WS SDK test", () => {
-    before(() => {
-        wsSdk = new BismuthWSSdk_1.BismuthWSSdk({
-            verbose: true,
-            socket: new Promise((res, rej) => {
-                const socket = new WebSocket("http://127.0.0.1:8155/web-socket/");
-                socket.on("open", () => {
-                    console.log("WSocket is ready!");
-                    res(socket);
-                });
-                socket.on("error", err => rej(err));
-            })
-        });
-    });
-    it("Can Get node status using a websocket connection", () => __awaiter(this, void 0, void 0, function* () {
-        let result = yield (yield wsSdk).getStatus();
-        chai_1.expect(result).to.be.haveOwnProperty("blocks");
-        return result;
-    })).timeout(10000);
-    it("Can Get a block's  details", () => __awaiter(this, void 0, void 0, function* () {
-        let result = yield (yield wsSdk).getBlock([558742]);
-        chai_1.expect(result).to.be.an("Array");
-        result.forEach(result => chai_1.expect(result).to.have.length(12));
-        return result;
-    }));
-    it("Can Get an list of addreses balances", () => __awaiter(this, void 0, void 0, function* () {
-        let addressList = [
-            "d2f59465568c120a9203f9bd6ba2169b21478f4e7cb713f61eaa1ea0",
-            "340c195f768be515488a6efedb958e135150b2ef3e53573a7017ac7d"
-        ];
-        let result = yield (yield wsSdk).getAddressListBalance([
-            addressList,
-            0,
-            true
-        ]);
-        chai_1.expect(result).to.be.an("Object");
-        chai_1.expect(result).to.have.all.keys(...addressList);
-        return result;
-        // this is slow
     })).timeout(5000);
 });

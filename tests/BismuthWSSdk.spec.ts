@@ -14,7 +14,7 @@ let wsSdk: BismuthWSSdk;
 describe("Bismuth WS SDK test", () => {
   before(() => {
     wsSdk = new BismuthWSSdk({
-      verbose: true,
+      verbose: false,
       socket: new Promise((res, rej) => {
         const socket = new WebSocket("http://127.0.0.1:8155/web-socket/");
         socket.on("open", () => {
@@ -49,7 +49,7 @@ describe("Bismuth WS SDK test", () => {
   it("Can Get an list of addreses tnxs with a limit", async () => {
     let addressList =
       "d2f59465568c120a9203f9bd6ba2169b21478f4e7cb713f61eaa1ea0";
-    let result = await (await wsSdk).getAddressTxnList(addressList,5);
+    let result = await (await wsSdk).getAddressTxnList(addressList, 5);
     expect(result).to.be.an("Array");
     expect(result.length === 5);
     return result;

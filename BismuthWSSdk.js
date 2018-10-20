@@ -17,7 +17,7 @@ class BismuthWSSdk extends BismuthNative_1.BismuthNative {
         return __awaiter(this, void 0, void 0, function* () {
             const socket = yield this.socket;
             return new Promise((res, rej) => {
-                socket.once("message", response => {
+                socket.once("message", (response) => {
                     if (this.verbose)
                         console.log("Command", command, "Recieved data from host", response.toString("utf8"));
                     const responseString = response.toString("utf8");
@@ -28,7 +28,7 @@ class BismuthWSSdk extends BismuthNative_1.BismuthNative {
                         rej({ err, responseString });
                     }
                 });
-                socket.once("error", err => rej(err));
+                socket.once("error", (err) => rej(err));
                 socket.send(JSON.stringify([command, ...options]));
             });
         });

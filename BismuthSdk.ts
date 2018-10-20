@@ -1,8 +1,16 @@
+import * as net from "net";
 import { BismuthNative, BismuthNativeConstructorParam } from "./BismuthNative";
-import {IDiffculty,IBlockNumber,IAddress,ITxn,IPublicKey,IPrivateKey,IBalance} from "./lib/typedefs";
+import {
+  IDiffculty,
+  IBlockNumber,
+  IAddress,
+  ITxn,
+  IPublicKey,
+  IPrivateKey,
+  IBalance
+} from "./lib/typedefs";
 
 export const MIN_NODE_VERSION = "4.2.3.7";
-
 
 interface NodeStatusPayload {
   timeoffset: number; // 0,
@@ -42,8 +50,21 @@ interface AddressBalanceInfo {
 }
 
 export class BismuthSdk extends BismuthNative {
-  constructor(cfg: BismuthNativeConstructorParam) {
-    super(cfg);
+  constructor({
+    server = "127.0.0.1",
+    port = 5658,
+    verbose = false,
+    socket = new Promise((resolve, reject) => {
+      let socket = net.createConnection(
+        { host: server, port, writable: true, readable: true },
+        () => {
+          if (verbose) console.log("Connected to node !");
+          return resolve(socket);
+        }
+      );
+    })
+  }: BismuthNativeConstructorParam = {}) {
+    super({ socket, verbose });
     this.getStatus().then(({ walletversion }) => {
       if (
         parseInt(walletversion.split(".").join("")) <
@@ -79,7 +100,7 @@ export class BismuthSdk extends BismuthNative {
     return await this.command("api_listbalance", addressList);
   }
 
-  public async getNewKeys(): Promise<[IPrivateKey,IPublicKey,IAddress]> {
+  public async getNewKeys(): Promise<[IPrivateKey, IPublicKey, IAddress]> {
     return await this.command("keygen");
   }
 }

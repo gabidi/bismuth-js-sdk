@@ -3,21 +3,19 @@
   "version": "0.0.2",
   "description": "Javascript/Typescript SDK for bismuth native and WS node",
   "dependencies": {
-    "@types/node": "^10.12.0",
-    "@types/ws": "^6.0.1",
-    "socket.io-client": "^2.1.1",
-    "superagent": "^4.0.0-beta.5",
-    "ws": "^6.1.0"
+    "socket.io-client": "^2.1.1"
   },
   "devDependencies": {
     "@types/chai": "^4.1.6",
+    "@types/node": "^10.12.0",
+    "@types/ws": "^6.0.1",
     "@types/socket.io-client": "^1.4.32",
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
     "typescript": "^2.9.2"
   },
   "scripts": {
-    "test:native": "mocha ./tests/demo.js",
+    "test:native": "mocha ./tests/BismuthSdk.spec.js",
     "test:ws": "mocha  ./tests/BismuthWSSdk.spec.js"
   },
   "author": "https://github.com/gabidi",

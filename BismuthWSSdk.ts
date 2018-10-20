@@ -1,9 +1,9 @@
 import { BismuthNative, BismuthNativeConstructorParam } from "./BismuthNative";
 import { BismuthSdk } from "./BismuthSdk";
 import {
-  Diffculty,
-  BlockNumber,
-  Address,
+  IDiffculty,
+  IBlockNumber,
+  IAddress,
   IWebNodeStatus,
   IWebNodeGetAddressTxn,
   IWebNodeBlockLast,
@@ -17,7 +17,7 @@ export class BismuthWSSdk extends BismuthNative {
   public async command(command: string, options: any[] = []): Promise<any> {
     const socket = await this.socket;
     return new Promise((res, rej) => {
-      socket.once("message", response => {
+      socket.once("message", (response: Buffer) => {
         if (this.verbose)
           console.log(
             "Command",
@@ -32,7 +32,7 @@ export class BismuthWSSdk extends BismuthNative {
           rej({ err, responseString });
         }
       });
-      socket.once("error", err => rej(err));
+      socket.once("error", (err: Error) => rej(err));
       socket.send(JSON.stringify([command, ...options]));
     });
   }
@@ -44,18 +44,18 @@ export class BismuthWSSdk extends BismuthNative {
     return await this.command("blocklast");
   }
 
-  public async getLastDifficulty(): Promise<[BlockNumber, Diffculty]> {
+  public async getLastDifficulty(): Promise<[IBlockNumber, IDiffculty]> {
     return await this.command("difflast");
   }
 
   public async getAddressTxnList(
-    address: Address,
+    address: IAddress,
     limit = 10
   ): Promise<IWebNodeGetAddressTxn[]> {
     return await this.command("addlistlim", [address, limit]);
   }
   public async getAddressBalance(
-    address: Address
+    address: IAddress
   ): Promise<IWebNodeGetBalance> {
     return await this.command("balanceget", [address]);
   }

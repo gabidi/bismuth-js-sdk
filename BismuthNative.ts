@@ -1,31 +1,23 @@
-import * as net from "net";
 import { isBoolean } from "util";
-
+interface Socket {
+  on: Function;
+  write: Function;
+	send: Function;
+	once: Function;
+}
 export interface BismuthNativeConstructorParam {
   server?: string; //'127.0.0.1'
   port?: number; // 5658,
   verbose?: boolean; // false
-  socket?: Promise<net.Socket>;
+  socket?: Promise<Socket>;
 }
 
 export class BismuthNative {
   protected verbose: boolean;
-  protected socket: Promise<net.Socket>;
+  protected socket: Promise<Socket>;
 
-  public constructor({
-    server = "127.0.0.1",
-    port = 5658,
-    verbose = false,
-    socket = new Promise((resolve, reject) => {
-      let socket = net.createConnection(
-        { host: server, port, writable: true, readable: true },
-        () => {
-          if (verbose) console.log("Connected to node !");
-          return resolve(socket);
-        }
-      );
-    })
-  }: BismuthNativeConstructorParam) {
+  public constructor(opts: BismuthNativeConstructorParam) {
+    const { verbose, server, port, socket } = opts;
     this.verbose = verbose;
 
     if (verbose)
@@ -39,7 +31,7 @@ export class BismuthNative {
     this.socket = socket;
   }
 
-  public async getConnection(): Promise<net.Socket> {
+  public async getConnection(): Promise<Socket> {
     if (this.verbose) console.log("Get connection is waiting on socket..");
     return await this.socket;
   }
@@ -66,7 +58,7 @@ export class BismuthNative {
           socket.write(optionPayload);
         });
 
-      socket.on("data", response => {
+      socket.on("data", (response: Buffer) => {
         if (this.verbose)
           console.log("Recieved data from host", response.toString("utf8"));
         try {
