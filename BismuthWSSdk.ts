@@ -1,6 +1,16 @@
 import { BismuthNative, BismuthNativeConstructorParam } from "./BismuthNative";
 import { BismuthSdk } from "./BismuthSdk";
-export class BismuthWSSdk extends BismuthSdk {
+import {
+  Diffculty,
+  BlockNumber,
+  Address,
+  IWebNodeStatus,
+  IWebNodeGetAddressTxn,
+  IWebNodeBlockLast,
+  IWebNodeGetBalance
+} from "./lib/typedefs";
+
+export class BismuthWSSdk extends BismuthNative {
   constructor(cfg: BismuthNativeConstructorParam) {
     super(cfg);
   }
@@ -9,15 +19,44 @@ export class BismuthWSSdk extends BismuthSdk {
     return new Promise((res, rej) => {
       socket.once("message", response => {
         if (this.verbose)
-          console.log("Recieved data from host", response.toString("utf8"));
+          console.log(
+            "Command",
+            command,
+            "Recieved data from host",
+            response.toString("utf8")
+          );
+        const responseString = response.toString("utf8");
         try {
-          return res(JSON.parse(response.toString("utf8").substr(10)));
+          return res(JSON.parse(responseString));
         } catch (err) {
-          rej(err);
+          rej({ err, responseString });
         }
       });
       socket.once("error", err => rej(err));
       socket.send(JSON.stringify([command, ...options]));
     });
+  }
+  public async getStatus(): Promise<IWebNodeStatus> {
+    return await this.command("statusget");
+  }
+
+  public async getBlock(): Promise<IWebNodeBlockLast> {
+    return await this.command("blocklast");
+  }
+
+  public async getLastDifficulty(): Promise<[BlockNumber, Diffculty]> {
+    return await this.command("difflast");
+  }
+
+  public async getAddressTxnList(
+    address: Address,
+    limit = 10
+  ): Promise<IWebNodeGetAddressTxn[]> {
+    return await this.command("addlistlim", [address, limit]);
+  }
+  public async getAddressBalance(
+    address: Address
+  ): Promise<IWebNodeGetBalance> {
+    return await this.command("balanceget", [address]);
   }
 }

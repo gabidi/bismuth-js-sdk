@@ -1,24 +1,18 @@
 import { BismuthNative, BismuthNativeConstructorParam } from "./BismuthNative";
+import {IDiffculty,IBlockNumber,IAddress,ITxn,IPublicKey,IPrivateKey,IBalance} from "./lib/typedefs";
 
 export const MIN_NODE_VERSION = "4.2.3.7";
 
-type BlockNumber = number;
-type Diffculty = String;
-type Txn = string;
-type Address = string;
-type PrivateKey = string;
-type PublicKey = string;
-type Balance = number;
 
 interface NodeStatusPayload {
   timeoffset: number; // 0,
   uptime: number; // 2533,
   consensus: number; //598396,
-  difficulty: Diffculty; //110.0921201303,
+  difficulty: IDiffculty; //110.0921201303,
   connections: number; // 6,
   threads: number; // 13,
   protocolversion: string; // 'mainnet0016',
-  blocks: BlockNumber; // 598396,
+  blocks: IBlockNumber; // 598396,
   consensus_percent: number; // 100,
   walletversion: string; // '4.2.3.1',
   testnet: boolean; // false
@@ -44,7 +38,7 @@ interface TxnDetails {
 }
 
 interface AddressBalanceInfo {
-  [address: string]: Balance;
+  [address: string]: IBalance;
 }
 
 export class BismuthSdk extends BismuthNative {
@@ -66,26 +60,26 @@ export class BismuthSdk extends BismuthNative {
   }
 
   public async getBlock(
-    blockNumbers: BlockNumber[]
+    blockNumbers: IBlockNumber[]
   ): Promise<string[] | number[]> {
     return await this.command("blockget", blockNumbers);
   }
 
-  public async getLastDifficulty(): Promise<[BlockNumber, Diffculty]> {
+  public async getLastDifficulty(): Promise<[IBlockNumber, IDiffculty]> {
     return await this.command("difflast");
   }
 
-  public async getTxnDetails(txn: [Txn, boolean]): Promise<TxnDetails> {
+  public async getTxnDetails(txn: [ITxn, boolean]): Promise<TxnDetails> {
     return await this.command("api_gettransaction", txn);
   }
 
   public async getAddressListBalance(
-    addressList: [Address[], number, boolean]
+    addressList: [IAddress[], number, boolean]
   ): Promise<any> {
     return await this.command("api_listbalance", addressList);
   }
 
-  public async getNewKeys(): Promise<[PrivateKey, PublicKey, Address]> {
+  public async getNewKeys(): Promise<[IPrivateKey,IPublicKey,IAddress]> {
     return await this.command("keygen");
   }
 }

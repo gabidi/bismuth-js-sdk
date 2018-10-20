@@ -19,7 +19,7 @@ const cfg = {
     verbose: false
 };
 let bis;
-xdescribe("BismuthNative Class Test", () => {
+describe("BismuthNative Class Test", () => {
     before(() => {
         bis = new BismuthNative_1.BismuthNative(cfg);
     });
@@ -38,7 +38,7 @@ xdescribe("BismuthNative Class Test", () => {
     }));
 });
 let sdk;
-xdescribe("Bismuth SDK test : ", () => {
+describe("Bismuth SDK test : ", () => {
     before(() => {
         sdk = new BismuthSdk_1.BismuthSdk(cfg);
     });
@@ -102,6 +102,7 @@ let wsSdk;
 describe("Bismuth WS SDK test", () => {
     before(() => {
         wsSdk = new BismuthWSSdk_1.BismuthWSSdk({
+            verbose: true,
             socket: new Promise((res, rej) => {
                 const socket = new WebSocket("http://127.0.0.1:8155/web-socket/");
                 socket.on("open", () => {
@@ -112,12 +113,12 @@ describe("Bismuth WS SDK test", () => {
             })
         });
     });
-    xit("Can Get node status using a websocket connection", () => __awaiter(this, void 0, void 0, function* () {
+    it("Can Get node status using a websocket connection", () => __awaiter(this, void 0, void 0, function* () {
         let result = yield (yield wsSdk).getStatus();
         chai_1.expect(result).to.be.haveOwnProperty("blocks");
         return result;
     })).timeout(10000);
-    xit("Can Get a block's  details", () => __awaiter(this, void 0, void 0, function* () {
+    it("Can Get a block's  details", () => __awaiter(this, void 0, void 0, function* () {
         let result = yield (yield wsSdk).getBlock([558742]);
         chai_1.expect(result).to.be.an("Array");
         result.forEach(result => chai_1.expect(result).to.have.length(12));

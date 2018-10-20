@@ -8,8 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const BismuthSdk_1 = require("./BismuthSdk");
-class BismuthWSSdk extends BismuthSdk_1.BismuthSdk {
+const BismuthNative_1 = require("./BismuthNative");
+class BismuthWSSdk extends BismuthNative_1.BismuthNative {
     constructor(cfg) {
         super(cfg);
     }
@@ -19,17 +19,43 @@ class BismuthWSSdk extends BismuthSdk_1.BismuthSdk {
             return new Promise((res, rej) => {
                 socket.once("message", response => {
                     if (this.verbose)
-                        console.log("Recieved data from host", response.toString("utf8"));
+                        console.log("Command", command, "Recieved data from host", response.toString("utf8"));
+                    const responseString = response.toString("utf8");
                     try {
-                        return res(JSON.parse(response.toString("utf8").substr(10)));
+                        return res(JSON.parse(responseString));
                     }
                     catch (err) {
-                        rej(err);
+                        rej({ err, responseString });
                     }
                 });
                 socket.once("error", err => rej(err));
                 socket.send(JSON.stringify([command, ...options]));
             });
+        });
+    }
+    getStatus() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.command("statusget");
+        });
+    }
+    getBlock() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.command("blocklast");
+        });
+    }
+    getLastDifficulty() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.command("difflast");
+        });
+    }
+    getAddressTxnList(address, limit = 10) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.command("addlistlim", [address, limit]);
+        });
+    }
+    getAddressBalance(address) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.command("balanceget", [address]);
         });
     }
 }

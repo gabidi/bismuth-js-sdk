@@ -72,7 +72,7 @@ export class BismuthNative {
         try {
           return resolve(JSON.parse(response.toString("utf8").substr(10)));
         } catch (err) {
-          reject(err);
+          reject({ err, response });
         }
       });
     });

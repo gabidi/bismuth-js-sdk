@@ -11,7 +11,7 @@ const cfg = {
 
 let bis: BismuthNative;
 
-xdescribe("BismuthNative Class Test", () => {
+describe("BismuthNative Class Test", () => {
   before(() => {
     bis = new BismuthNative(cfg);
   });
@@ -36,7 +36,7 @@ xdescribe("BismuthNative Class Test", () => {
 
 let sdk: BismuthSdk;
 
-xdescribe("Bismuth SDK test : ", () => {
+describe("Bismuth SDK test : ", () => {
   before(() => {
     sdk = new BismuthSdk(cfg);
   });
@@ -112,6 +112,7 @@ let wsSdk: BismuthWSSdk;
 describe("Bismuth WS SDK test", () => {
   before(() => {
     wsSdk = new BismuthWSSdk({
+      verbose: true,
       socket: new Promise((res, rej) => {
         const socket = new WebSocket("http://127.0.0.1:8155/web-socket/");
         socket.on("open", () => {
@@ -123,12 +124,12 @@ describe("Bismuth WS SDK test", () => {
     });
   });
 
-  xit("Can Get node status using a websocket connection", async () => {
+  it("Can Get node status using a websocket connection", async () => {
     let result = await (await wsSdk).getStatus();
     expect(result).to.be.haveOwnProperty("blocks");
     return result;
   }).timeout(10000);
-  xit("Can Get a block's  details", async () => {
+  it("Can Get a block's  details", async () => {
     let result = await (await wsSdk).getBlock([558742]);
     expect(result).to.be.an("Array");
     result.forEach(result => expect(result).to.have.length(12));

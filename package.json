@@ -17,7 +17,8 @@
     "typescript": "^2.9.2"
   },
   "scripts": {
-    "test": "mocha  ./tests/demo.js"
+    "test:native": "mocha ./tests/demo.js",
+    "test:ws": "mocha  ./tests/BismuthWSSdk.spec.js"
   },
   "author": "https://github.com/gabidi",
   "license": "ISC"
