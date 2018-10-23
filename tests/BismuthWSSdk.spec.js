@@ -22,7 +22,7 @@ describe("Bismuth WS SDK test", () => {
         wsSdk = new BismuthWSSdk_1.BismuthWSSdk({
             verbose: false,
             socket: new Promise((res, rej) => {
-                const socket = new WebSocket("http://78.28.227.89:8155/web-socket/");
+                const socket = new WebSocket("http://194.19.235.82:8155/web-socket/");
                 socket.on("open", () => {
                     console.log("WSocket is ready!");
                     res(socket);
@@ -56,6 +56,7 @@ describe("Bismuth WS SDK test", () => {
         let resultOffset = yield (yield wsSdk).getAddressTxnList(addressList, 5, 5);
         chai_1.expect(result).to.be.an("Array");
         chai_1.expect(result.length === 5);
+        console.log(result, "rr", resultOffset);
         chai_1.expect(resultOffset.every(x => !result.find(y => x.join("-") === y.join("-")))).to.be.true;
         // this is slow
     })).timeout(15000);

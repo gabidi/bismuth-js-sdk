@@ -10,31 +10,38 @@ import {
   IWebNodeGetBalance,
   IWebNodeDifficultyPayload
 } from "./lib/typedefs";
+import { queue } from "async";
 
 export class BismuthWSSdk extends BismuthNative {
+  private queue = queue(async ({ command, options, action }, cb) => {
+    const socket = await this.socket;
+    socket.once("message", (response: Buffer) => {
+      if (this.verbose)
+        console.log(
+          "Command",
+          command,
+          "Recieved data from host",
+          response.toString("utf8")
+        );
+      const responseString = response.toString("utf8");
+      try {
+        action(JSON.parse(responseString));
+	      cb();
+      } catch (err) {
+        cb(err);
+      }
+    });
+    socket.send(JSON.stringify([command, ...options]));
+  }, 1);
+
   constructor(cfg: BismuthNativeConstructorParam) {
     super(cfg);
   }
   public async command(command: string, options: any[] = []): Promise<any> {
-    const socket = await this.socket;
     return new Promise((res, rej) => {
-      socket.once("message", (response: Buffer) => {
-        if (this.verbose)
-          console.log(
-            "Command",
-            command,
-            "Recieved data from host",
-            response.toString("utf8")
-          );
-        const responseString = response.toString("utf8");
-        try {
-          return res(JSON.parse(responseString));
-        } catch (err) {
-          rej({ err, responseString });
-        }
+      this.queue.push({ command, options, action: res }, err => {
+        if (err) rej(err);
       });
-      socket.once("error", (err: Error) => rej(err));
-      socket.send(JSON.stringify([command, ...options]));
     });
   }
   public async getStatus(): Promise<IWebNodeStatus> {

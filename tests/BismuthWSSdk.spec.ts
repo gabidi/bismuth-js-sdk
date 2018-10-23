@@ -16,7 +16,7 @@ describe("Bismuth WS SDK test", () => {
     wsSdk = new BismuthWSSdk({
       verbose: false,
       socket: new Promise((res, rej) => {
-        const socket = new WebSocket("http://78.28.227.89:8155/web-socket/");
+        const socket = new WebSocket("http://194.19.235.82:8155/web-socket/");
         socket.on("open", () => {
           console.log("WSocket is ready!");
           res(socket);
@@ -56,7 +56,7 @@ describe("Bismuth WS SDK test", () => {
     let resultOffset = await (await wsSdk).getAddressTxnList(addressList, 5, 5);
     expect(result).to.be.an("Array");
     expect(result.length === 5);
-
+    console.log(result, "rr", resultOffset);
     expect(
       resultOffset.every(x => !result.find(y => x.join("-") === y.join("-")))
     ).to.be.true;

@@ -9,27 +9,34 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const BismuthNative_1 = require("./BismuthNative");
+const async_1 = require("async");
 class BismuthWSSdk extends BismuthNative_1.BismuthNative {
     constructor(cfg) {
         super(cfg);
+        this.queue = async_1.queue(({ command, options, action }, cb) => __awaiter(this, void 0, void 0, function* () {
+            const socket = yield this.socket;
+            socket.once("message", (response) => {
+                if (this.verbose)
+                    console.log("Command", command, "Recieved data from host", response.toString("utf8"));
+                const responseString = response.toString("utf8");
+                try {
+                    action(JSON.parse(responseString));
+                    cb();
+                }
+                catch (err) {
+                    cb(err);
+                }
+            });
+            socket.send(JSON.stringify([command, ...options]));
+        }), 1);
     }
     command(command, options = []) {
         return __awaiter(this, void 0, void 0, function* () {
-            const socket = yield this.socket;
             return new Promise((res, rej) => {
-                socket.once("message", (response) => {
-                    if (this.verbose)
-                        console.log("Command", command, "Recieved data from host", response.toString("utf8"));
-                    const responseString = response.toString("utf8");
-                    try {
-                        return res(JSON.parse(responseString));
-                    }
-                    catch (err) {
-                        rej({ err, responseString });
-                    }
+                this.queue.push({ command, options, action: res }, err => {
+                    if (err)
+                        rej(err);
                 });
-                socket.once("error", (err) => rej(err));
-                socket.send(JSON.stringify([command, ...options]));
             });
         });
     }
