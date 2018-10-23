@@ -14,6 +14,10 @@ import { queue } from "async";
 
 export class BismuthWSSdk extends BismuthNative {
   private queue = queue(async ({ command, options, action }, cb) => {
+    const timeoutId = setTimeout(
+      () => cb(new Error("Response Timeout")),
+      15000
+    );
     const socket = await this.socket;
     socket.once("message", (response: Buffer) => {
       if (this.verbose)
@@ -26,9 +30,11 @@ export class BismuthWSSdk extends BismuthNative {
       const responseString = response.toString("utf8");
       try {
         action(JSON.parse(responseString));
-	      cb();
+        cb();
       } catch (err) {
         cb(err);
+      } finally {
+        clearTimeout(timeoutId);
       }
     });
     socket.send(JSON.stringify([command, ...options]));

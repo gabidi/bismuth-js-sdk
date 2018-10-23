@@ -14,6 +14,7 @@ class BismuthWSSdk extends BismuthNative_1.BismuthNative {
     constructor(cfg) {
         super(cfg);
         this.queue = async_1.queue(({ command, options, action }, cb) => __awaiter(this, void 0, void 0, function* () {
+            const timeoutId = setTimeout(() => cb(new Error("Response Timeout")), 15000);
             const socket = yield this.socket;
             socket.once("message", (response) => {
                 if (this.verbose)
@@ -25,6 +26,9 @@ class BismuthWSSdk extends BismuthNative_1.BismuthNative {
                 }
                 catch (err) {
                     cb(err);
+                }
+                finally {
+                    clearTimeout(timeoutId);
                 }
             });
             socket.send(JSON.stringify([command, ...options]));
