@@ -21,7 +21,23 @@ export type IBalanceNotInMemPool = number;
 export type ITxnId = string;
 export type ITxnAmount = number;
 export type ITxnType = "token:transfer";
+export type INetworkHashRate = number;
+export type IDifficultyDropLevel = number;
+export type IBlockGenerationTime = number;
+export type IBlockPreviousDifficulty = IDiffculty;
+export type IDifficultyAdjustment = IDiffculty;
+export type IBlockAvgGenerationTime = number; // over 1440 blocks
 
+export type IWebNodeDifficultyPayload = [
+  IDiffculty,
+  IDifficultyDropLevel,
+  IBlockGenerationTime,
+  IBlockPreviousDifficulty,
+  IBlockAvgGenerationTime,
+  INetworkHashRate,
+  IDifficultyAdjustment,
+  IBlockNumber
+];
 export type IWebNodeStatus = [
   IAddress,
   INodesCount,
@@ -31,7 +47,7 @@ export type IWebNodeStatus = [
   IPeersConsensus,
   IPeersConsensusPct,
   INodeVersion,
-  IDiffculty,
+  IWebNodeDifficultyPayload,
   IServerTimestamp
 ];
 export type IWebNodeBlockLast = [

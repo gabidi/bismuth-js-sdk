@@ -48,9 +48,26 @@ class BismuthWSSdk extends BismuthNative_1.BismuthNative {
             return yield this.command("difflast");
         });
     }
-    getAddressTxnList(address, limit = 10) {
+    getAddressTxnList(address, limit = 10, offset = 0) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.command("addlistlim", [address, limit]);
+            return yield this.command("addlistlim", [address, limit, offset]);
+        });
+    }
+    getAddressFromAlias(alias) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.command("addfromalias", [alias]);
+        });
+    }
+    getAddressAlias(address) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.command("aliasesget", [
+                Array.isArray(address) ? address : [address]
+            ]);
+        });
+    }
+    getAliasAvalibility(alias) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.command("aliascheck", [alias]);
         });
     }
     getAddressBalance(address) {

@@ -7,7 +7,8 @@ import {
   IWebNodeStatus,
   IWebNodeGetAddressTxn,
   IWebNodeBlockLast,
-  IWebNodeGetBalance
+  IWebNodeGetBalance,
+  IWebNodeDifficultyPayload
 } from "./lib/typedefs";
 
 export class BismuthWSSdk extends BismuthNative {
@@ -50,9 +51,23 @@ export class BismuthWSSdk extends BismuthNative {
 
   public async getAddressTxnList(
     address: IAddress,
-    limit = 10
+    limit = 10,
+    offset = 0
   ): Promise<IWebNodeGetAddressTxn[]> {
-    return await this.command("addlistlim", [address, limit]);
+    return await this.command("addlistlim", [address, limit, offset]);
+  }
+  public async getAddressFromAlias(alias: string): Promise<IAddress> {
+    return await this.command("addfromalias", [alias]);
+  }
+  public async getAddressAlias(address: IAddress[]): Promise<IAddress> {
+    return await this.command("aliasesget", [
+      Array.isArray(address) ? address : [address]
+    ]);
+  }
+  public async getAliasAvalibility(
+    alias: string
+  ): Promise<"Alais free" | "Alias registered"> {
+    return await this.command("aliascheck", [alias]);
   }
   public async getAddressBalance(
     address: IAddress

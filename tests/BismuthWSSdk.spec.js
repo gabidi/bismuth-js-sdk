@@ -12,7 +12,7 @@ const chai_1 = require("chai");
 const BismuthWSSdk_1 = require("../BismuthWSSdk");
 const WebSocket = require("ws");
 const cfg = {
-    server: "127.0.0.1",
+    server: "194.19.235.82",
     port: 5658,
     verbose: false
 };
@@ -22,7 +22,7 @@ describe("Bismuth WS SDK test", () => {
         wsSdk = new BismuthWSSdk_1.BismuthWSSdk({
             verbose: false,
             socket: new Promise((res, rej) => {
-                const socket = new WebSocket("http://127.0.0.1:8155/web-socket/");
+                const socket = new WebSocket("http://78.28.227.89:8155/web-socket/");
                 socket.on("open", () => {
                     console.log("WSocket is ready!");
                     res(socket);
@@ -48,11 +48,28 @@ describe("Bismuth WS SDK test", () => {
         return result;
         // this is slow
     })).timeout(15000);
-    it("Can Get an list of addreses tnxs with a limit", () => __awaiter(this, void 0, void 0, function* () {
+    it("Can Get an list of addreses tnxs with a limit & offset", () => __awaiter(this, void 0, void 0, function* () {
         let addressList = "d2f59465568c120a9203f9bd6ba2169b21478f4e7cb713f61eaa1ea0";
         let result = yield (yield wsSdk).getAddressTxnList(addressList, 5);
         chai_1.expect(result).to.be.an("Array");
         chai_1.expect(result.length === 5);
+        let resultOffset = yield (yield wsSdk).getAddressTxnList(addressList, 5, 5);
+        chai_1.expect(result).to.be.an("Array");
+        chai_1.expect(result.length === 5);
+        chai_1.expect(resultOffset.every(x => !result.find(y => x.join("-") === y.join("-")))).to.be.true;
+        // this is slow
+    })).timeout(15000);
+    it("Can check an aliases avalblity", () => __awaiter(this, void 0, void 0, function* () {
+        let alias = "poop";
+        let result = yield (yield wsSdk).getAliasAvalibility(alias);
+        chai_1.expect(result).to.be.oneOf(["Alias free", "Alias registered"]);
+        return result;
+        // this is slow
+    })).timeout(15000);
+    it("Get address from alias", () => __awaiter(this, void 0, void 0, function* () {
+        let alias = "god";
+        let result = yield (yield wsSdk).getAddressFromAlias(alias);
+        chai_1.expect(result).to.be.a("String");
         return result;
         // this is slow
     })).timeout(15000);

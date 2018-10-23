@@ -2,8 +2,8 @@ import { isBoolean } from "util";
 interface Socket {
   on: Function;
   write: Function;
-	send: Function;
-	once: Function;
+  send: Function;
+  once: Function;
 }
 export interface BismuthNativeConstructorParam {
   server?: string; //'127.0.0.1'
