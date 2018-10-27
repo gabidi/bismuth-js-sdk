@@ -29,18 +29,18 @@ describe("Bismuth WS SDK test", () => {
     });
   });
 
-  xit("Can Get node status using a websocket connection", async () => {
+  it("Can Get node status using a websocket connection", async () => {
     let result = await (await wsSdk).getStatus();
     expect(result).to.be.an("Array");
     return result;
   }).timeout(10000);
 
-  xit("Can Get a block's  details", async () => {
+  it("Can Get a block's  details", async () => {
     let result = await (await wsSdk).getBlock();
     expect(result).to.be.an("Array");
     return result;
   });
-  xit("Can Get an list of addreses balances", async () => {
+  it("Can Get an list of addreses balances", async () => {
     let addressList =
       "d2f59465568c120a9203f9bd6ba2169b21478f4e7cb713f61eaa1ea0";
     let result = await (await wsSdk).getAddressBalance(addressList);
@@ -49,7 +49,7 @@ describe("Bismuth WS SDK test", () => {
 
     // this is slow
   }).timeout(15000);
-  xit("Can Get an list of addreses tnxs with a limit & offset", async () => {
+  it("Can Get an list of addreses tnxs with a limit & offset", async () => {
     let addressList =
       "d2f59465568c120a9203f9bd6ba2169b21478f4e7cb713f61eaa1ea0";
     let result = await (await wsSdk).getAddressTxnList(addressList, 5);
@@ -65,7 +65,7 @@ describe("Bismuth WS SDK test", () => {
     ).to.be.true;
     // this is slow
   }).timeout(15000);
-  xit("Can check an aliases avalblity", async () => {
+  it("Can check an aliases avalblity", async () => {
     let alias = "poop";
     let result = await (await wsSdk).getAliasAvalibility(alias);
     expect(result).to.be.oneOf(["Alias free", "Alias registered"]);
@@ -73,7 +73,7 @@ describe("Bismuth WS SDK test", () => {
 
     // this is slow
   }).timeout(15000);
-  xit("Get address from alias", async () => {
+  it("Get address from alias", async () => {
     let alias = "god";
     let result = await (await wsSdk).getAddressFromAlias(alias);
     expect(result).to.be.a("String");
