@@ -73,7 +73,7 @@ export type IWebNodeGetBalance = [
   IBalanceNotInMemPool
 ];
 
-export type IWebNodeGetAddressTxn = [
+export type IWebNodeAddressTxn = [
   IBlockNumber,
   IServerTimestamp,
   IAddress,

@@ -1,11 +1,12 @@
 import { BismuthNative, BismuthNativeConstructorParam } from "./BismuthNative";
 import { BismuthSdk } from "./BismuthSdk";
 import {
+  ITxn,
   IDiffculty,
   IBlockNumber,
   IAddress,
   IWebNodeStatus,
-  IWebNodeGetAddressTxn,
+  IWebNodeAddressTxn,
   IWebNodeBlockLast,
   IWebNodeGetBalance,
   IWebNodeDifficultyPayload
@@ -61,12 +62,26 @@ export class BismuthWSSdk extends BismuthNative {
   public async getLastDifficulty(): Promise<[IBlockNumber, IDiffculty]> {
     return await this.command("difflast");
   }
+  public async getMempoolTxns():Promise<IWebNodeAddressTxn> {
+    return await this.command("mpget");
+  }
+  /// FIXME DO MEM POOL CALLS BEFORE YOU MOVE ON!
+  public async getTransactions(
+    txnId: ITxn,
+    addresses: IAddress[] | undefined = undefined
+  ):Promise<IWebNodeAddressTxn> {
+    if (addresses && !Array.isArray(addresses)) addresses = [addresses];
+    const payload = [txnId];
+    if (addresses) payload.push(addresses);
+
+    return await this.command("txget", payload);
+  }
 
   public async getAddressTxnList(
     address: IAddress,
     limit = 10,
     offset = 0
-  ): Promise<IWebNodeGetAddressTxn[]> {
+  ): Promise<IWebNodeAddressTxn[]> {
     return await this.command("addlistlim", [address, limit, offset]);
   }
   public async getAddressFromAlias(alias: string): Promise<IAddress> {
@@ -82,6 +97,7 @@ export class BismuthWSSdk extends BismuthNative {
   ): Promise<"Alais free" | "Alias registered"> {
     return await this.command("aliascheck", [alias]);
   }
+
   public async getAddressBalance(
     address: IAddress
   ): Promise<IWebNodeGetBalance> {

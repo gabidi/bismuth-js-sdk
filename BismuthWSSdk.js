@@ -59,6 +59,22 @@ class BismuthWSSdk extends BismuthNative_1.BismuthNative {
             return yield this.command("difflast");
         });
     }
+    getMempoolTxns() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.command("mpget");
+        });
+    }
+    /// FIXME DO MEM POOL CALLS BEFORE YOU MOVE ON!
+    getTransactions(txnId, addresses = undefined) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (addresses && !Array.isArray(addresses))
+                addresses = [addresses];
+            const payload = [txnId];
+            if (addresses)
+                payload.push(addresses);
+            return yield this.command("txget", payload);
+        });
+    }
     getAddressTxnList(address, limit = 10, offset = 0) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.command("addlistlim", [address, limit, offset]);
