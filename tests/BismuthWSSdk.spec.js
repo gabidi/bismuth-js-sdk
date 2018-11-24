@@ -11,9 +11,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const chai_1 = require("chai");
 const BismuthWSSdk_1 = require("../BismuthWSSdk");
 const WebSocket = require("ws");
+//const cfg = {
+//  server: "localhost",
+//  port: 8155,
+//  verbose: false
+//};
 const cfg = {
-    server: "194.19.235.82",
-    port: 5658,
+    server: "wallet.bismuthplatform.de",
+    port: 8155,
     verbose: false
 };
 let wsSdk;
@@ -26,7 +31,7 @@ describe("Bismuth WS SDK test", () => {
         wsSdk = new BismuthWSSdk_1.BismuthWSSdk({
             verbose: false,
             socket: new Promise((res, rej) => {
-                const socket = new WebSocket("http://127.0.0.2:8155/web-socket/");
+                const socket = new WebSocket(`http://${cfg.server}:${cfg.port}/web-socket/`);
                 socket.on("open", () => {
                     console.log("WSocket is ready!");
                     res(socket);
@@ -35,24 +40,24 @@ describe("Bismuth WS SDK test", () => {
             })
         });
     });
-    xit("Can Get node status using a websocket connection", () => __awaiter(this, void 0, void 0, function* () {
+    it("Can Get node status using a websocket connection", () => __awaiter(this, void 0, void 0, function* () {
         let result = yield (yield wsSdk).getStatus();
         chai_1.expect(result).to.be.an("Array");
         return result;
     })).timeout(10000);
-    xit("Can Get a block's  details", () => __awaiter(this, void 0, void 0, function* () {
+    it("Can Get a block's  details", () => __awaiter(this, void 0, void 0, function* () {
         let result = yield (yield wsSdk).getBlock();
         chai_1.expect(result).to.be.an("Array");
         return result;
     }));
-    xit("Can Get an list of addreses balances", () => __awaiter(this, void 0, void 0, function* () {
+    it("Can Get an list of addreses balances", () => __awaiter(this, void 0, void 0, function* () {
         let addressList = "d2f59465568c120a9203f9bd6ba2169b21478f4e7cb713f61eaa1ea0";
         let result = yield (yield wsSdk).getAddressBalance(addressList);
         chai_1.expect(result).to.be.an("Array");
         return result;
         // this is slow
     })).timeout(15000);
-    xit("Can Get an list of addreses tnxs with a limit & offset", () => __awaiter(this, void 0, void 0, function* () {
+    it("Can Get an list of addreses tnxs with a limit & offset", () => __awaiter(this, void 0, void 0, function* () {
         let addressList = "d2f59465568c120a9203f9bd6ba2169b21478f4e7cb713f61eaa1ea0";
         let result = yield (yield wsSdk).getAddressTxnList(addressList, 5);
         chai_1.expect(result).to.be.an("Array");
@@ -60,18 +65,17 @@ describe("Bismuth WS SDK test", () => {
         let resultOffset = yield (yield wsSdk).getAddressTxnList(addressList, 5, 5);
         chai_1.expect(result).to.be.an("Array");
         chai_1.expect(result.length === 5);
-        console.log(result, "rr", resultOffset);
         chai_1.expect(resultOffset.every(x => !result.find(y => x.join("-") === y.join("-")))).to.be.true;
         // this is slow
-    })).timeout(15000);
-    xit("Can check an aliases avalblity", () => __awaiter(this, void 0, void 0, function* () {
+    })).timeout(65000);
+    it("Can check an aliases avalblity", () => __awaiter(this, void 0, void 0, function* () {
         let alias = "poop";
         let result = yield (yield wsSdk).getAliasAvalibility(alias);
         chai_1.expect(result).to.be.oneOf(["Alias free", "Alias registered"]);
         return result;
         // this is slow
     })).timeout(15000);
-    xit("Get address from alias", () => __awaiter(this, void 0, void 0, function* () {
+    it("Get address from alias", () => __awaiter(this, void 0, void 0, function* () {
         let alias = "god";
         let result = yield (yield wsSdk).getAddressFromAlias(alias);
         chai_1.expect(result).to.be.a("String");

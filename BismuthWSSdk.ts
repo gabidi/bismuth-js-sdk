@@ -62,14 +62,14 @@ export class BismuthWSSdk extends BismuthNative {
   public async getLastDifficulty(): Promise<[IBlockNumber, IDiffculty]> {
     return await this.command("difflast");
   }
-  public async getMempoolTxns():Promise<IWebNodeAddressTxn> {
+  public async getMempoolTxns(): Promise<IWebNodeAddressTxn> {
     return await this.command("mpget");
   }
   /// FIXME DO MEM POOL CALLS BEFORE YOU MOVE ON!
   public async getTransactions(
     txnId: ITxn,
     addresses: IAddress[] | undefined = undefined
-  ):Promise<IWebNodeAddressTxn> {
+  ): Promise<IWebNodeAddressTxn> {
     if (addresses && !Array.isArray(addresses)) addresses = [addresses];
     const payload = [txnId];
     if (addresses) payload.push(addresses);
@@ -80,9 +80,12 @@ export class BismuthWSSdk extends BismuthNative {
   public async getAddressTxnList(
     address: IAddress,
     limit = 10,
-    offset = 0
+    offset = undefined
   ): Promise<IWebNodeAddressTxn[]> {
-    return await this.command("addlistlim", [address, limit, offset]);
+    const command = offset && offset > 0 ? "addlistlimfrom" : "addlistlim";
+    const param = [address, limit];
+    if (command === "addlistlimfrom") param.push(offset);
+    return await this.command(command, param);
   }
   public async getAddressFromAlias(alias: string): Promise<IAddress> {
     return await this.command("addfromalias", [alias]);

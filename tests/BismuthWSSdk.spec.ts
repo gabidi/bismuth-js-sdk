@@ -3,9 +3,14 @@ import { BismuthNative } from "../BismuthNative";
 import { BismuthSdk } from "../BismuthSdk";
 import { BismuthWSSdk } from "../BismuthWSSdk";
 import WebSocket = require("ws");
+//const cfg = {
+//  server: "localhost",
+//  port: 8155,
+//  verbose: false
+//};
 const cfg = {
-  server: "194.19.235.82",
-  port: 5658,
+  server: "wallet.bismuthplatform.de",
+  port: 8155,
   verbose: false
 };
 
@@ -19,7 +24,9 @@ describe("Bismuth WS SDK test", () => {
     wsSdk = new BismuthWSSdk({
       verbose: false,
       socket: new Promise((res, rej) => {
-        const socket = new WebSocket("http://127.0.0.2:8155/web-socket/");
+        const socket = new WebSocket(
+          `http://${cfg.server}:${cfg.port}/web-socket/`
+        );
         socket.on("open", () => {
           console.log("WSocket is ready!");
           res(socket);
@@ -59,12 +66,11 @@ describe("Bismuth WS SDK test", () => {
     let resultOffset = await (await wsSdk).getAddressTxnList(addressList, 5, 5);
     expect(result).to.be.an("Array");
     expect(result.length === 5);
-    console.log(result, "rr", resultOffset);
     expect(
       resultOffset.every(x => !result.find(y => x.join("-") === y.join("-")))
     ).to.be.true;
     // this is slow
-  }).timeout(15000);
+  }).timeout(65000);
   it("Can check an aliases avalblity", async () => {
     let alias = "poop";
     let result = await (await wsSdk).getAliasAvalibility(alias);
