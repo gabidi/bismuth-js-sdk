@@ -1,6 +1,6 @@
 {
   "name": "bismuth-js-sdk",
-  "version": "0.0.4",
+  "version": "0.0.7",
   "description": "Javascript/Typescript SDK for bismuth native and WS node",
   "dependencies": {
     "async": "^2.6.1",
