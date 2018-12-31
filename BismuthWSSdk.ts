@@ -9,7 +9,8 @@ import {
   IWebNodeAddressTxn,
   IWebNodeBlockLast,
   IWebNodeGetBalance,
-  IWebNodeDifficultyPayload
+  IWebNodeDifficultyPayload,
+  IMempoolTxnPayload
 } from "./lib/typedefs";
 import { queue } from "async";
 
@@ -66,11 +67,10 @@ export class BismuthWSSdk extends BismuthNative {
     return await this.command("mpget");
   }
   public async insertMemPoolTxn(
-    b64SignedTxn: string
+    mempoolTxnPayload: IMempoolTxnPayload[]
   ): Promise<String> {
-    return await this.command("mpinsert", [b64SignedTxn]);
+    return await this.command("mpinsert", [mempoolTxnPayload]);
   }
-  /// FIXME DO MEM POOL CALLS BEFORE YOU MOVE ON!
   public async getTransactions(
     txnId: ITxn,
     addresses: IAddress[] | undefined = undefined

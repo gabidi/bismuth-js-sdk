@@ -19,7 +19,7 @@ export type IFees = number;
 export type IRewards = number;
 export type IBalanceNotInMemPool = number;
 export type ITxnId = string;
-export type ITxnAmount = number;
+export type ITxnAmount = number; // .8f 
 export type ITxnType = "token:transfer";
 export type INetworkHashRate = number;
 export type IDifficultyDropLevel = number;
@@ -85,4 +85,15 @@ export type IWebNodeAddressTxn = [
   ITxnAmount,
   ITxnType,
   string // wtf is egg:50 ?
+];
+
+export type IMempoolTxnPayload = [
+  string, // timestamp 2.f
+  IAddress,
+  IAddress, // reciepient
+  ITxnAmount,
+  string, // b64signed txn
+  string, // b64signede publickey
+  string, // Operation,
+  string //data
 ];

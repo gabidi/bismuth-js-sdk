@@ -64,12 +64,11 @@ class BismuthWSSdk extends BismuthNative_1.BismuthNative {
             return yield this.command("mpget");
         });
     }
-    insertMemPoolTxn(b64SignedTxn) {
+    insertMemPoolTxn(mempoolTxnPayload) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.command("mpinsert", [b64SignedTxn]);
+            return yield this.command("mpinsert", [mempoolTxnPayload]);
         });
     }
-    /// FIXME DO MEM POOL CALLS BEFORE YOU MOVE ON!
     getTransactions(txnId, addresses = undefined) {
         return __awaiter(this, void 0, void 0, function* () {
             if (addresses && !Array.isArray(addresses))
